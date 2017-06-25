@@ -1,3 +1,4 @@
+import numpy
 import pandas
 
 
@@ -28,18 +29,24 @@ def dicts_to_dataframe(dicts):
         df[dummy] = pandas.Categorical(0)
         df.columns = newcolumns + [dummy]
         del df[dummy]
-
-    # Convert columns with lists to tuples, since .unique() does not
-    # work with lists (it requires hash-able values):
-    for key, dtype in zip(df.columns, df.dtypes):
-        if dtype == object and (df[key].apply(type) == list).any():
-            df[key] = df[key].apply(tuple)
     return df
 
 
-def different_keys(df):
-    for key in df.columns:
-        if len(df[key].unique()) != 1:
+def different_keys(df, rtol=0, atol=0):
+    if len(df) <= 1:
+        return
+    for key, dtype in zip(df.columns, df.dtypes):
+        column = df[key].values  # to 1D numpy array
+        if (rtol or atol) and numpy.issubdtype(dtype, numpy.floating):
+            if not numpy.allclose(column[0], column[1:], rtol=rtol, atol=atol):
+                yield key
+        elif dtype == object:
+            # Since "column[0] == column[1:]" does not work for object
+            # array, it is handled explicitly here.
+            first = column[0]
+            if not all(first == c for c in column[1:]):
+                yield key
+        elif not (column[0] == column[1:]).all():
             yield key
 
 
@@ -49,10 +56,10 @@ def pretty_column_keys(columns):
 
 class DictsDiff(object):
 
-    def __init__(self, value_dicts, info_dicts):
+    def __init__(self, value_dicts, info_dicts, **kwds):
         self.value_df = dicts_to_dataframe(value_dicts)
         self.info_df = dicts_to_dataframe(info_dicts)
-        self.keys = sorted(different_keys(self.value_df))
+        self.keys = sorted(different_keys(self.value_df, **kwds))
         self.diff_df = pandas.concat(
             [self.value_df[self.keys], self.info_df],
             axis=1,
@@ -72,7 +79,7 @@ class DictsDiff(object):
         return df
 
 
-def diff_dicts(value_dicts):
+def diff_dicts(value_dicts, **kwds):
     value_dicts = list(value_dicts)
     info_dicts = [{}] * len(value_dicts)
-    return DictsDiff(value_dicts, info_dicts)
+    return DictsDiff(value_dicts, info_dicts, **kwds)

@@ -27,13 +27,13 @@ def load_any(path):
         return loader(f)
 
 
-def diff_files(files):
+def diff_files(files, **kwds):
     files = list(files)
     value_dicts = list(map(load_any, files))
     info_dicts = [dict(path=path) for path in files]
-    return DictsDiff(value_dicts, info_dicts)
+    return DictsDiff(value_dicts, info_dicts, **kwds)
 
 
-def diff_ndjson(stream):
+def diff_ndjson(stream, **kwds):
     import json
-    return diff_dicts(map(json.loads, stream))
+    return diff_dicts(map(json.loads, stream), **kwds)

@@ -16,14 +16,14 @@ except ImportError:
         return columns, rows
 
 
-def dictsdiff_cli(files):
+def dictsdiff_cli(files, **kwds):
     import pandas
     from .loader import diff_files, diff_ndjson
 
     if files:
-        dd = diff_files(files)
+        dd = diff_files(files, **kwds)
     else:
-        dd = diff_ndjson(sys.stdin)
+        dd = diff_ndjson(sys.stdin, **kwds)
 
     # Manually detect terminal size, since passing "'display.width',
     # None" does not detect terminal size (as advertised in
@@ -47,6 +47,18 @@ def make_parser(doc=__doc__):
     parser.add_argument(
         'files', metavar='FILE', nargs='*',
     )
+    parser.add_argument(
+        '--atol', default=0, type=float,
+        help='''
+        When `atol` or `rtol` is non-zero, then the comparison of the
+        floating point values are done using the following equation:
+        ``|a - b| <= atol + rtol * |b|`` where `a` is the value in the
+        first dictionary (file).  Comparison of the non-floating point
+        value is not affected.
+        ''')
+    parser.add_argument(
+        '--rtol', default=0, type=float,
+        help='See --atol.')
     return parser
 
 
