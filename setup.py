@@ -20,7 +20,7 @@ setup(
     install_requires=[
         'pandas',
     ],
-    # entry_points={
-    #     'console_scripts': ['PROGRAM_NAME = dictsdiff.cli:main'],
-    # },
+    entry_points={
+        'console_scripts': ['dictsdiff = dictsdiff.cli:main'],
+    },
 )
