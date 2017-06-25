@@ -18,7 +18,7 @@ setup(
         # see: http://pypi.python.org/pypi?%3Aaction=list_classifiers
     ],
     install_requires=[
-        # 'SOME_PACKAGE',
+        'pandas',
     ],
     # entry_points={
     #     'console_scripts': ['PROGRAM_NAME = dictsdiff.cli:main'],
