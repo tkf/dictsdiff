@@ -7,18 +7,22 @@ setup(
     package_dir={'': 'src'},
     author='Takafumi Arakaki',
     author_email='aka.tkf@gmail.com',
-    # url='https://github.com/tkf/dictsdiff',
+    url='https://github.com/tkf/dictsdiff',
     license='BSD-2-Clause',  # SPDX short identifier
-    # description='dictsdiff - THIS DOES WHAT',
+    description='CLI & Python API for comparing multiple dictionaries',
     long_description=open('README.rst').read(),
-    # keywords='KEYWORD, KEYWORD, KEYWORD',
+    keywords='CLI, diff, JSON, YAML, Pickle',
     classifiers=[
-        "Development Status :: 3 - Alpha",
+        'Development Status :: 3 - Alpha',
         'License :: OSI Approved :: BSD License',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.6',
+        'Topic :: Software Development',
         # see: http://pypi.python.org/pypi?%3Aaction=list_classifiers
     ],
     install_requires=[
         'pandas',
+        'PyYAML',
     ],
     entry_points={
         'console_scripts': ['dictsdiff = dictsdiff.cli:main'],
