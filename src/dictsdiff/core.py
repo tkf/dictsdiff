@@ -28,6 +28,12 @@ def dicts_to_dataframe(dicts):
         df[dummy] = pandas.Categorical(0)
         df.columns = newcolumns + [dummy]
         del df[dummy]
+
+    # Convert columns with lists to tuples, since .unique() does not
+    # work with lists (it requires hash-able values):
+    for key, dtype in zip(df.columns, df.dtypes):
+        if dtype == object and (df[key].apply(type) == list).any():
+            df[key] = df[key].apply(tuple)
     return df
 
 

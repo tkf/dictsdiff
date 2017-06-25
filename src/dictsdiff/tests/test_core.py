@@ -7,6 +7,8 @@ from ..core import diff_dicts
     ([dict(a=1)] * 2, []),
     ([dict(a=1), dict(a=2)], ['a']),
     ([dict(a=1), dict(b=1)], ['a', 'b']),
+    ([dict(a=[1]), dict(a=[1])], []),
+    ([dict(a=[1]), dict(a=[2])], ['a']),
 ])
 def test_diff_flat_keys(value_dicts, diff_keys):
     dd = diff_dicts(value_dicts)
