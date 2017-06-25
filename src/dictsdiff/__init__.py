@@ -62,7 +62,7 @@ path
 
 >>> import io
 >>> from dictsdiff import diff_ndjson
->>> ndjson = '''
+>>> ndjson = u'''
 ... {"a": 1, "b": {"c": 0, "d": 0}}
 ... {"a": 2, "b": {"c": 0, "d": 1}}
 ... '''.strip()
