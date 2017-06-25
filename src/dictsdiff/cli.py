@@ -18,7 +18,7 @@ def dictsdiff_cli(files):
 
     with pandas.option_context('display.max_rows', None,
                                'display.max_columns', None):
-        print(dd.diff_df)
+        print(dd.pretty_diff())
 
 
 def make_parser(doc=__doc__):

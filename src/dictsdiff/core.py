@@ -43,6 +43,10 @@ def different_keys(df):
             yield key
 
 
+def pretty_column_keys(columns):
+    return list(map('.'.join, columns))
+
+
 class DictsDiff(object):
 
     def __init__(self, value_dicts, info_dicts):
@@ -54,6 +58,18 @@ class DictsDiff(object):
             axis=1,
             keys=['value', 'info'],
         )
+
+    def pretty_diff(self):
+        df = self.diff_df.copy()
+        if ('info', ('path',)) in df:
+            paths = df['info', ('path',)]
+            df = df['value']
+            df.index = paths
+            df.index.name = 'path'
+        else:
+            df = df['value']
+        df.columns = pretty_column_keys(df.columns)
+        return df
 
 
 def diff_dicts(value_dicts):
