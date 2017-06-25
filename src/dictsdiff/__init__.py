@@ -77,7 +77,7 @@ path
 
 __version__ = '0.0.0'
 __author__ = 'Takafumi Arakaki'
-__license__ = None
+__license__ = 'BSD-2-Clause'
 
 from .core import diff_dicts
 from .loader import diff_files, diff_ndjson
