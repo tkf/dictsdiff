@@ -19,7 +19,16 @@ def iteritemsdeep(dct):
 
 
 def dicts_to_dataframe(dicts):
-    return pandas.DataFrame.from_dict([dict(iteritemsdeep(d)) for d in dicts])
+    df = pandas.DataFrame.from_dict([dict(iteritemsdeep(d)) for d in dicts])
+    if len(df.columns) > 0 and not isinstance(df.columns[0], tuple):
+        # Workaround for the bug in pandas:
+        # https://github.com/pandas-dev/pandas/issues/16769
+        newcolumns = [c if isinstance(c, tuple) else (c,) for c in df.columns]
+        dummy = object()
+        df[dummy] = pandas.Categorical(0)
+        df.columns = newcolumns + [dummy]
+        del df[dummy]
+    return df
 
 
 def different_keys(df):
