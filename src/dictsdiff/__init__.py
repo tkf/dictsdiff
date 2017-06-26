@@ -2,6 +2,11 @@
 Command line program & Python functions for comparing multiple dictionaries
 ===========================================================================
 
+`dictsdiff` provides a CLI and Python interface for comparing
+arbitrary number of nested dictionaries and show it as a tabular
+format via pandas_.DataFrame.
+
+
 Python interface
 ----------------
 
@@ -12,6 +17,7 @@ Python interface
 >>> dd = diff_dicts([
 ...     {'a': 1, 'b': {'c': 0, 'd': 0}},
 ...     {'a': 2, 'b': {'c': 0, 'd': 1}},
+...     {'a': 1, 'b': {'c': 0, 'd': 1}},
 ... ])
 >>> dd.keys
 [('a',), ('b', 'd')]
@@ -19,6 +25,7 @@ Python interface
    a  b.d
 0  1    0
 1  2    1
+2  1    1
 
 
 `dictsdiff.diff_files`
@@ -56,6 +63,23 @@ path
    a  b.d
 0  1    0
 1  2    1
+
+
+Installation
+------------
+::
+
+   pip install https://github.com/tkf/dictsdiff/archive/master.zip
+
+
+Requirements
+^^^^^^^^^^^^
+
+- pandas_
+- PyYAML_ (optional)
+
+.. _pandas: http://pandas.pydata.org
+.. _PyYAML: http://pyyaml.org/wiki/PyYAML
 """
 
 __version__ = '0.0.0'
