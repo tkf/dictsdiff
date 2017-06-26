@@ -1,6 +1,8 @@
 Command line program & Python functions for comparing multiple dictionaries
 ===========================================================================
 
+|pypi|
+
 `dictsdiff` provides a CLI and Python interface for comparing
 arbitrary number of nested dictionaries and show it as a tabular
 format via pandas_.DataFrame.
@@ -112,6 +114,7 @@ Installation
 ------------
 ::
 
+   pip install dictsdiff  # or
    pip install https://github.com/tkf/dictsdiff/archive/master.zip
 
 
@@ -123,3 +126,8 @@ Requirements
 
 .. _pandas: http://pandas.pydata.org
 .. _PyYAML: http://pyyaml.org/wiki/PyYAML
+
+.. |pypi|
+   image:: https://badge.fury.io/py/dictsdiff.svg
+   :target: https://badge.fury.io/py/dictsdiff
+   :alt: Python Package Index
