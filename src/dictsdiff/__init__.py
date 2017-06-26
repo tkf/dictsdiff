@@ -2,23 +2,6 @@
 Command line program & Python functions for comparing multiple dictionaries
 ===========================================================================
 
-CLI
----
-
-Usage::
-
-  dictsdiff FILE [FILE ...]
-  cat *.ndjson | dictsdiff
-
-When paths to multiple files are given, it loads the dictionaries from
-those files and compare (possibly) nested values in them.  The
-key-value pairs that are different or missing are shown in a table
-format.
-
-When no files are given, it is assumed that Newline delimited JSON
-(ndjson) is fed to the stdin.
-
-
 Python interface
 ----------------
 

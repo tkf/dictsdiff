@@ -1,5 +1,18 @@
 """
 Compare multiple similar dictionary data in JSON/YAML/Pickle files.
+
+Usage::
+
+  dictsdiff FILE [FILE ...]
+  cat *.ndjson | dictsdiff
+
+When paths to multiple files are given, it loads the dictionaries from
+those files and compare (possibly) nested values in them.  The
+key-value pairs that are different or missing are shown in a table
+format.
+
+When no files are given, it is assumed that Newline delimited JSON
+(ndjson) is fed to the stdin.
 """
 
 from __future__ import print_function
