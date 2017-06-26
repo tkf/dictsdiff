@@ -1,0 +1,12 @@
+sudo: false
+language: python
+python:
+  - "2.7"
+  - "3.5"
+  - "3.6"
+before_install:
+  - pip install --quiet tox-travis coveralls
+script:
+  - tox -- --cov dictsdiff
+after_success:
+  - coveralls
