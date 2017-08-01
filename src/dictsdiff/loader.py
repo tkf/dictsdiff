@@ -8,16 +8,16 @@ class LoaderError(DictsDiffError):
 def param_module(path):
     if path.lower().endswith(('.yaml', '.yml')):
         import yaml
-        return yaml
+        return yaml, ''
     elif path.lower().endswith('.json'):
         import json
-        return json
+        return json, ''
     elif path.lower().endswith(('.pickle', '.pkl')):
         try:
             import cPickle as pickle
         except:
             import pickle
-        return pickle
+        return pickle, 'b'
     else:
         raise LoaderError(
             'data format of {!r} is not supported'.format(path))
@@ -27,9 +27,9 @@ def load_any_file(path):
     """
     Load data from given path; data format is determined by file extension
     """
-    loader = param_module(path).load
-    with open(path) as f:
-        return loader(f)
+    module, mode = param_module(path)
+    with open(path, 'r' + mode) as f:
+        return module.load(f)
 
 
 def destruct_path(path):
