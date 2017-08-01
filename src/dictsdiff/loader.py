@@ -68,7 +68,7 @@ def to_info_dict(path):
         path = '{} {}'.format(filepath, jspath)
         return dict(path=path, filepath=filepath, jsonpath=jspath)
     else:
-        return dict(path=path)
+        return dict(path=filepath, filepath=filepath)
 
 
 def diff_files(files, **kwds):
