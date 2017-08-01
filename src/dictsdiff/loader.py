@@ -1,4 +1,8 @@
-from .core import DictsDiff, diff_dicts
+from .core import DictsDiffError, DictsDiff, diff_dicts
+
+
+class LoaderError(DictsDiffError):
+    pass
 
 
 def param_module(path):
@@ -15,7 +19,8 @@ def param_module(path):
             import pickle
         return pickle
     else:
-        raise ValueError('data format of {!r} is not supported'.format(path))
+        raise LoaderError(
+            'data format of {!r} is not supported'.format(path))
 
 
 def load_any_file(path):
@@ -44,11 +49,11 @@ def load_any(path):
         root = load_any_file(filepath)
         matches = list(jspath_expr.find(root))
         if len(matches) == 0:
-            raise RuntimeError('No object found at {} in {}'
-                               .format(jspath, filepath))
+            raise LoaderError(
+                'No object found at {} in {}'.format(jspath, filepath))
         elif len(matches) != 1:
-            raise RuntimeError('Multiple objects found at {} in {}'
-                               .format(jspath, filepath))
+            raise LoaderError(
+                'Multiple objects found at {} in {}'.format(jspath, filepath))
         return matches[0].value
     else:
         return load_any_file(filepath)
