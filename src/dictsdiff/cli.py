@@ -3,13 +3,18 @@ Compare multiple similar dictionary data in JSON/YAML/Pickle files.
 
 Usage::
 
-  dictsdiff FILE [FILE ...]
+  dictsdiff FILE [JSON_PATH] [FILE [JSON_PATH] ...]
   cat *.ndjson | dictsdiff
 
 When paths to multiple files are given, it loads the dictionaries from
 those files and compare (possibly) nested values in them.  The
 key-value pairs that are different or missing are shown in a table
-format.
+format.  A file path ``FILE`` may be followed by a JSONPath_
+``JSON_PATH`` which starts with ``$.``.  If ``FILE`` starts with
+``$.``, prepend ``./`` to ``FILE`` to disambiguate the argument.
+``JSON_PATH`` can be used for non-JSON files.
+
+.. _JSONPath: http://goessner.net/articles/JsonPath/
 
 When no files are given, it is assumed that Newline delimited JSON
 (ndjson) is fed to the stdin.
@@ -61,7 +66,7 @@ def dictsdiff_cli(files, **kwds):
     from .loader import diff_files, diff_ndjson
 
     if files:
-        dd = diff_files(files, **kwds)
+        dd = diff_files(parse_file_paths(files), **kwds)
     else:
         dd = diff_ndjson(sys.stdin, **kwds)
 
@@ -74,6 +79,37 @@ def dictsdiff_cli(files, **kwds):
                                'display.max_columns', None,
                                'display.width', width):
         print(dd.pretty_diff())
+
+
+def parse_file_paths(files):
+    """
+    Parse FILE argument of the CLI to ``(filepath, jspath)``-tuples.
+
+    >>> list(parse_file_paths(['a', 'b', 'c']))
+    [('a', None), ('b', None), ('c', None)]
+    >>> list(parse_file_paths(['a', '$.b', 'c']))
+    [('a', '$.b'), ('c', None)]
+    """
+    files = iter(files)
+    try:
+        filepath = next(files)
+    except StopIteration:
+        return
+    while True:
+        try:
+            nextpath = next(files)
+        except StopIteration:
+            yield (filepath, None)
+            return
+        if nextpath.startswith('$.'):
+            yield (filepath, nextpath)
+            try:
+                filepath = next(files)
+            except StopIteration:
+                return
+        else:
+            yield (filepath, None)
+            filepath = nextpath
 
 
 def make_parser(doc=__doc__):

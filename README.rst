@@ -13,13 +13,18 @@ CLI
 
 Usage::
 
-  dictsdiff FILE [FILE ...]
+  dictsdiff FILE [JSON_PATH] [FILE [JSON_PATH] ...]
   cat *.ndjson | dictsdiff
 
 When paths to multiple files are given, it loads the dictionaries from
 those files and compare (possibly) nested values in them.  The
 key-value pairs that are different or missing are shown in a table
-format.
+format.  A file path ``FILE`` may be followed by a JSONPath_
+``JSON_PATH`` which starts with ``$.``.  If ``FILE`` starts with
+``$.``, prepend ``./`` to ``FILE`` to disambiguate the argument.
+``JSON_PATH`` can be used for non-JSON files.
+
+.. _JSONPath: http://goessner.net/articles/JsonPath/
 
 When no files are given, it is assumed that Newline delimited JSON
 (ndjson) is fed to the stdin.
@@ -123,9 +128,11 @@ Requirements
 
 - pandas_
 - PyYAML_ (optional)
+- jsonpath-rw_ (optional)
 
 .. _pandas: http://pandas.pydata.org
 .. _PyYAML: http://pyyaml.org/wiki/PyYAML
+.. _jsonpath-rw: https://github.com/kennknowles/python-jsonpath-rw
 
 .. |pypi|
    image:: https://badge.fury.io/py/dictsdiff.svg

@@ -80,9 +80,11 @@ Requirements
 
 - pandas_
 - PyYAML_ (optional)
+- jsonpath-rw_ (optional)
 
 .. _pandas: http://pandas.pydata.org
 .. _PyYAML: http://pyyaml.org/wiki/PyYAML
+.. _jsonpath-rw: https://github.com/kennknowles/python-jsonpath-rw
 
 .. |pypi|
    image:: https://badge.fury.io/py/dictsdiff.svg

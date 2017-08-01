@@ -23,6 +23,7 @@ setup(
     install_requires=[
         'pandas',
         'PyYAML',
+        'jsonpath-rw',
     ],
     entry_points={
         'console_scripts': ['dictsdiff = dictsdiff.cli:main'],
