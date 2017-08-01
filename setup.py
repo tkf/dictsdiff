@@ -23,6 +23,7 @@ setup(
     install_requires=[
         'pandas',
         'PyYAML',
+        'toml',
         'jsonpath-rw',
     ],
     entry_points={

@@ -24,3 +24,10 @@ def test_load_pickle(tmpdir):
         pickle.dump(dumped, file)
     loaded = load_any(str(paramfile))
     assert loaded == dumped
+
+
+def test_load_toml(tmpdir):
+    paramfile = tmpdir.join('param.toml')
+    paramfile.write('x = 1')
+    loaded = load_any(str(paramfile))
+    assert loaded == {'x': 1}

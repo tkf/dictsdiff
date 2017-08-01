@@ -18,6 +18,9 @@ def param_module(path):
         except:
             import pickle
         return pickle, 'b'
+    elif path.lower().endswith('.toml'):
+        import toml
+        return toml, ''
     else:
         raise LoaderError(
             'data format of {!r} is not supported'.format(path))
