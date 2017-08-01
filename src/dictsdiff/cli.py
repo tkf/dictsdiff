@@ -51,6 +51,8 @@ from __future__ import print_function
 
 import sys
 
+from .core import DictsDiffError
+
 try:
     from shutil import get_terminal_size
 except ImportError:
@@ -59,6 +61,10 @@ except ImportError:
         out = check_output(['stty', 'size'], universal_newlines=True)
         rows, columns = map(int, out.strip().split())
         return columns, rows
+
+
+class CLIError(DictsDiffError, RuntimeError):
+    pass
 
 
 def dictsdiff_cli(files, **kwds):
@@ -89,6 +95,14 @@ def parse_file_paths(files):
     [('a', None), ('b', None), ('c', None)]
     >>> list(parse_file_paths(['a', '$.b', 'c']))
     [('a', '$.b'), ('c', None)]
+    >>> list(parse_file_paths(['a', '$.b', '$.c']))
+    ...                                    # doctest: +NORMALIZE_WHITESPACE
+    Traceback (most recent call last):
+       ...
+    dictsdiff.cli.CLIError: A JSON_PATH must follow a FILE.
+    No FILE is specified before JSON_PATH=$.c.
+    If it really is a file path, start it with "./".
+
     """
     files = iter(files)
     try:
@@ -96,6 +110,12 @@ def parse_file_paths(files):
     except StopIteration:
         return
     while True:
+        if filepath.startswith('$.'):
+            raise CLIError(
+                'A JSON_PATH must follow a FILE.'
+                ' No FILE is specified before JSON_PATH={}.'
+                ' If it really is a file path, start it with "./".'
+                .format(filepath))
         try:
             nextpath = next(files)
         except StopIteration:
@@ -110,6 +130,10 @@ def parse_file_paths(files):
         else:
             yield (filepath, None)
             filepath = nextpath
+
+if sys.version_info[0] == 2:
+    parse_file_paths.__doc__ = parse_file_paths.__doc__.replace(
+        'dictsdiff.cli.CLIError', 'CLIError')
 
 
 def make_parser(doc=__doc__):
@@ -141,4 +165,10 @@ def make_parser(doc=__doc__):
 def main(args=None):
     parser = make_parser()
     ns = parser.parse_args(args)
-    dictsdiff_cli(**vars(ns))
+    try:
+        dictsdiff_cli(**vars(ns))
+    except CLIError as err:
+        parser.print_usage()
+        parser.exit(2, str(err) + '\n')
+    except DictsDiffError as err:
+        parser.exit(1, str(err) + '\n')

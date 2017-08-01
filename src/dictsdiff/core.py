@@ -2,6 +2,10 @@ import numpy
 import pandas
 
 
+class DictsDiffError(Exception):
+    pass
+
+
 def iteritemsdeep(dct):
     """
     Works like ``dict.iteritems`` but iterate over all descendant items
