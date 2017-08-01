@@ -8,7 +8,7 @@ def param_module(path):
     elif path.lower().endswith('.json'):
         import json
         return json
-    elif path.lower().endswith('.pickle', '.pkl'):
+    elif path.lower().endswith(('.pickle', '.pkl')):
         try:
             import cPickle as pickle
         except:
@@ -51,7 +51,7 @@ def load_any(path):
                                .format(jspath, filepath))
         return matches[0].value
     else:
-        return load_any_file(path)
+        return load_any_file(filepath)
 
 
 def to_info_dict(path):
