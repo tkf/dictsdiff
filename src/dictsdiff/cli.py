@@ -67,7 +67,7 @@ class CLIError(DictsDiffError, RuntimeError):
     pass
 
 
-def dictsdiff_cli(files, **kwds):
+def dictsdiff_cli(files, transpose, **kwds):
     import pandas
     from .loader import diff_files, diff_ndjson
 
@@ -75,6 +75,9 @@ def dictsdiff_cli(files, **kwds):
         dd = diff_files(parse_file_paths(files), **kwds)
     else:
         dd = diff_ndjson(sys.stdin, **kwds)
+    pdiff = dd.pretty_diff()
+    if transpose:
+        pdiff = pdiff.T
 
     # Manually detect terminal size, since passing "'display.width',
     # None" does not detect terminal size (as advertised in
@@ -84,7 +87,7 @@ def dictsdiff_cli(files, **kwds):
     with pandas.option_context('display.max_rows', None,
                                'display.max_columns', None,
                                'display.width', width):
-        print(dd.pretty_diff())
+        print(pdiff)
 
 
 def parse_file_paths(files):
@@ -159,6 +162,9 @@ def make_parser(doc=__doc__):
     parser.add_argument(
         '--rtol', default=0, type=float,
         help='See --atol.')
+    parser.add_argument(
+        '--transpose', '-T', action='store_true',
+        help='Transpose table.')
     return parser
 
 
