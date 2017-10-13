@@ -67,12 +67,19 @@ class CLIError(DictsDiffError, RuntimeError):
     pass
 
 
-def dictsdiff_cli(files, transpose, **kwds):
+def dictsdiff_cli(files, transpose, transform, transform_to, **kwds):
     import pandas
-    from .loader import diff_files, diff_ndjson
+    from .core import DictsDiff
+    from .loader import diff_files, diff_ndjson, to_info_dict, \
+        transforming_loader
 
     if files:
-        dd = diff_files(parse_file_paths(files), **kwds)
+        if transform:
+            value_dicts = transforming_loader(files, transform, transform_to)
+            info_dicts = list(map(to_info_dict, files))
+            dd = DictsDiff(value_dicts, info_dicts, **kwds)
+        else:
+            dd = diff_files(parse_file_paths(files), **kwds)
     else:
         dd = diff_ndjson(sys.stdin, **kwds)
     pdiff = dd.pretty_diff()
@@ -165,6 +172,15 @@ def make_parser(doc=__doc__):
     parser.add_argument(
         '--transpose', '-T', action='store_true',
         help='Transpose table.')
+    parser.add_argument(
+        '--transform',
+        help='''Command to transform each file.  It is a Python format
+        string that takes FILE path as the first argument.  For
+        example, use "jq '.SOME.KEY' {}" to load only a subset of
+        JSON.''')
+    parser.add_argument(
+        '--transform-to', default='json',
+        help='Output type of <transform> command.')
     return parser
 
 

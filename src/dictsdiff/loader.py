@@ -1,3 +1,6 @@
+import os
+import subprocess
+
 from .core import DictsDiffError, DictsDiff, diff_dicts
 
 
@@ -60,6 +63,21 @@ def load_any(path):
         return matches[0].value
     else:
         return load_any_file(filepath)
+
+
+def transforming_loader(files, transform, transform_to):
+    module, mode = param_module('.' + transform_to)
+    universal_newlines = mode != 'b'
+    for path in files:
+        with open(os.devnull) as devnull:
+            proc = subprocess.Popen(
+                transform.format(path),
+                shell=True,
+                stdout=subprocess.PIPE,
+                stdin=devnull,
+                universal_newlines=universal_newlines)
+        yield module.load(proc.stdout)
+        proc.wait()
 
 
 def to_info_dict(dictpath):
