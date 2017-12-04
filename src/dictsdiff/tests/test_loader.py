@@ -2,7 +2,7 @@ import pickle
 
 import pytest
 
-from ..loader import load_any, to_info_dict
+from ..loader import load_any, to_info_dict, transforming_loader
 
 
 def test_load_yaml(tmpdir):
@@ -45,3 +45,9 @@ def test_to_info_dict(path, info_dict):
     actual = to_info_dict(path)
     assert isinstance(actual['path'], str)
     assert actual == info_dict
+
+
+def test_transforming_loader():
+    transform = 'echo \'{{"x": 1}}\''
+    loaded, = transforming_loader([None], transform, 'json')
+    assert loaded == {'x': 1}
