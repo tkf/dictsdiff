@@ -25,6 +25,11 @@ def iteritemsdeep(dct):
 
 def dicts_to_dataframe(dicts):
     df = pandas.DataFrame.from_dict([dict(iteritemsdeep(d)) for d in dicts])
+    force_tuple_columns(df)
+    return df
+
+
+def force_tuple_columns(df):
     if len(df.columns) > 0 and not isinstance(df.columns[0], tuple):
         # Workaround for the bug in pandas:
         # https://github.com/pandas-dev/pandas/issues/16769
@@ -33,7 +38,6 @@ def dicts_to_dataframe(dicts):
         df[dummy] = pandas.Categorical(0)
         df.columns = newcolumns + [dummy]
         del df[dummy]
-    return df
 
 
 def different_keys(df, rtol=0, atol=0):
@@ -60,9 +64,12 @@ def pretty_column_keys(columns):
 
 class DictsDiff(object):
 
-    def __init__(self, value_dicts, info_dicts, **kwds):
+    def __init__(self, value_dicts, info_dicts, info_keys=[], **kwds):
         self.value_df = dicts_to_dataframe(value_dicts)
         self.info_df = dicts_to_dataframe(info_dicts)
+        self._move_info_values(info_keys)
+        force_tuple_columns(self.info_df)
+        self.info_keys = info_keys
         self.keys = sorted(different_keys(self.value_df, **kwds))
         self.diff_df = pandas.concat(
             [self.value_df[self.keys], self.info_df],
@@ -70,9 +77,22 @@ class DictsDiff(object):
             keys=['value', 'info'],
         )
 
+    def _move_info_values(self, info_keys):
+        for key in info_keys:
+            try:
+                self.info_df[key] = self.value_df.pop(key)
+            except KeyError:
+                pass
+
     def pretty_diff(self):
         df = self.diff_df.copy()
-        if ('info', ('path',)) in df:
+        if self.info_keys:
+            df = df.set_index([('info', key) for key in self.info_keys])
+            df = df['value']
+            # Throw away ('info', ...) part and then prettify the
+            # index names.  Note that n[0] below is always 'info':
+            df.index.names = pretty_column_keys(n[1] for n in df.index.names)
+        elif ('info', ('path',)) in df:
             paths = df['info', ('path',)]
             df = df['value']
             df.index = paths

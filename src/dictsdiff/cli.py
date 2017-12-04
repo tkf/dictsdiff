@@ -67,12 +67,53 @@ class CLIError(DictsDiffError, RuntimeError):
     pass
 
 
-def dictsdiff_cli(files, transpose, transform, transform_to, **kwds):
+def jspath_to_tuple(jspath):
+    try:
+        left = jspath.left
+    except AttributeError:
+        # jspath is a Root()
+        return ()
+
+    left_tuple = jspath_to_tuple(left)
+
+    try:
+        field, = jspath.right.fields
+    except AttributeError:
+        pass
+    except ValueError as err:
+        # TODO: find out if it is possible
+        raise NotImplementedError(err)
+    else:
+        return left_tuple + (field,)
+
+    try:
+        index = jspath.right.index
+    except AttributeError:
+        pass
+    else:
+        return left_tuple + (index,)
+
+    raise NotImplementedError('Cannot convert JSONPath {} to a tuple'
+                              .format(jspath))
+
+
+def process_info_key(info_key):
+    if info_key.startswith('.'):
+        info_key = '$' + info_key
+    elif not info_key.startswith('$.'):
+        info_key = '$.' + info_key
+    from jsonpath_rw import parse
+    return jspath_to_tuple(parse(info_key))
+
+
+def dictsdiff_cli(files, transpose, transform, transform_to, info_keys,
+                  **kwds):
     import pandas
     from .core import DictsDiff
     from .loader import diff_files, diff_ndjson, to_info_dict, \
         transforming_loader
 
+    kwds['info_keys'] = list(map(process_info_key, info_keys))
     if files:
         if transform:
             value_dicts = transforming_loader(files, transform, transform_to)
@@ -181,6 +222,12 @@ def make_parser(doc=__doc__):
     parser.add_argument(
         '--transform-to', default='json',
         help='Output type of <transform> command.')
+    parser.add_argument(
+        '--info-key', dest='info_keys', default=[], action='append',
+        help="""
+        JSONPath for objects to be considered as meta information, not
+        the value, of the record.  Prefixing by "$." is not necessary.
+        """)
     return parser
 
 
