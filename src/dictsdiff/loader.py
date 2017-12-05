@@ -62,8 +62,24 @@ def load_any(path):
         return load_any_file(filepath)
 
 
-def to_info_dict(path):
-    filepath, jspath = destruct_path(path)
+def to_info_dict(dictpath):
+    """
+    Make an "info dict" which becomes a row of `.DictsDiff.info_df`.
+
+    Parameters
+    ----------
+    dictpath : str or tuple
+        It can be a string which is a filepath or a 2-tupe of filepath
+        and a JSONPath.
+
+    Returns
+    -------
+    info_dict : dict
+        It has a key ``'path'`` with a string value and a key
+        ``'filepath'`` wit has string value.
+
+    """
+    filepath, jspath = destruct_path(dictpath)
     if jspath:
         path = '{} {}'.format(filepath, jspath)
         return dict(path=path, filepath=filepath, jsonpath=jspath)
