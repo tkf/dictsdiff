@@ -80,10 +80,12 @@ Requirements
 
 - pandas_
 - PyYAML_ (optional)
+- toml_ (optional)
 - jsonpath-rw_ (optional)
 
 .. _pandas: http://pandas.pydata.org
 .. _PyYAML: http://pyyaml.org/wiki/PyYAML
+.. _toml: https://github.com/uiri/toml
 .. _jsonpath-rw: https://github.com/kennknowles/python-jsonpath-rw
 
 .. |pypi|
