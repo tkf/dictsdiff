@@ -4,7 +4,8 @@ Compare multiple similar dictionary data in JSON/YAML/Pickle files.
 Usage::
 
   dictsdiff FILE [JSON_PATH] [FILE [JSON_PATH] ...]
-  cat *.ndjson | dictsdiff
+  dictsdiff --ndjson=FILE.ndjson
+  cat *.ndjson | dictsdiff [--ndjson=-]
 
 When paths to multiple files are given, it loads the dictionaries from
 those files and compare (possibly) nested values in them.  The
@@ -106,7 +107,7 @@ def process_info_key(info_key):
     return jspath_to_tuple(parse(info_key))
 
 
-def dictsdiff_cli(files, transpose, transform, transform_to, info_keys,
+def dictsdiff_cli(files, ndjson, transpose, transform, transform_to, info_keys,
                   **kwds):
     import pandas
     from .core import DictsDiff
@@ -115,12 +116,17 @@ def dictsdiff_cli(files, transpose, transform, transform_to, info_keys,
 
     kwds['info_keys'] = list(map(process_info_key, info_keys))
     if files:
+        if ndjson:
+            raise CLIError('FILES and --ndjson are mutually exclusive.')
         if transform:
             value_dicts = transforming_loader(files, transform, transform_to)
             info_dicts = list(map(to_info_dict, files))
             dd = DictsDiff(value_dicts, info_dicts, **kwds)
         else:
             dd = diff_files(parse_file_paths(files), **kwds)
+    elif ndjson and ndjson != '-':
+        with open(ndjson) as file:
+            dd = diff_ndjson(file, **kwds)
     else:
         dd = diff_ndjson(sys.stdin, **kwds)
     pdiff = dd.pretty_diff()
@@ -197,6 +203,15 @@ def make_parser(doc=__doc__):
         description=doc)
     parser.add_argument(
         'files', metavar='FILE', nargs='*',
+    )
+    parser.add_argument(
+        '--ndjson',
+        help="""
+        Path from which Newline delimited JSON (ndjson) is loaded.
+        '-' means stdin.
+        It is an error to pass this argument when at least one FILE is
+        specified.
+        """,
     )
     parser.add_argument(
         '--atol', default=0, type=float,

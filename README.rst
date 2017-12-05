@@ -14,7 +14,8 @@ CLI
 Usage::
 
   dictsdiff FILE [JSON_PATH] [FILE [JSON_PATH] ...]
-  cat *.ndjson | dictsdiff
+  dictsdiff --ndjson=FILE.ndjson
+  cat *.ndjson | dictsdiff [--ndjson=-]
 
 When paths to multiple files are given, it loads the dictionaries from
 those files and compare (possibly) nested values in them.  The
