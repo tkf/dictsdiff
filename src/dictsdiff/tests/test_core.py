@@ -1,6 +1,6 @@
 import pytest
 
-from ..core import diff_dicts
+from ..core import DictsDiff, diff_dicts
 
 
 @pytest.mark.parametrize('value_dicts, diff_keys', [
@@ -24,3 +24,26 @@ def test_diff_flat_keys(value_dicts, diff_keys):
 def test_float_diff_with_tol(value_dicts, diff_keys, rtol, atol):
     dd = diff_dicts(value_dicts, rtol=rtol, atol=atol)
     assert dd.keys == sorted((k,) for k in diff_keys)
+
+
+def test_info_keys_with_nonempty_info_dicts():
+    dd = DictsDiff(
+        [dict(a=dict(b=111, c=0)), dict(a=dict(b=222, c=1))],
+        [dict(path='x'), dict(path='y')],
+        info_keys=[('a', 'b')],
+    )
+    df = dd.pretty_diff()
+    assert list(df.columns) == ['a.c']
+    assert list(df.index.names) == ['a.b']
+    assert list(df.index) == [111, 222]
+
+
+def test_info_keys_with_empty_info_dicts():
+    dd = diff_dicts(
+        [dict(a=dict(b=111, c=0)), dict(a=dict(b=222, c=1))],
+        info_keys=[('a', 'b')],
+    )
+    df = dd.pretty_diff()
+    assert list(df.columns) == ['a.c']
+    assert list(df.index.names) == ['a.b']
+    assert list(df.index) == [111, 222]
