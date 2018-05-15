@@ -57,11 +57,7 @@ from .core import DictsDiffError
 try:
     from shutil import get_terminal_size
 except ImportError:
-    def get_terminal_size():
-        from subprocess import check_output
-        out = check_output(['stty', 'size'], universal_newlines=True)
-        rows, columns = map(int, out.strip().split())
-        return columns, rows
+    from .utils import get_terminal_size_stty as get_terminal_size
 
 
 class CLIError(DictsDiffError, RuntimeError):
