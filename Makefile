@@ -4,7 +4,7 @@ PROJECT = dictsdiff
 
 ## Testing
 test: inject-readme
-	tox
+	tox -e py36
 
 test-cov: test-cov-py27 test-cov-py36
 
