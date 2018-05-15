@@ -6,6 +6,7 @@ python:
   - "3.6"
 env:
   - PANDAS=dev
+  - PANDAS=0.22
   - PANDAS=0.21
   - PANDAS=0.20
   - PANDAS=0.19
