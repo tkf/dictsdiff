@@ -4,9 +4,15 @@ python:
   - "2.7"
   - "3.5"
   - "3.6"
+env:
+  - PANDAS=dev
+  - PANDAS=0.21
+  - PANDAS=0.20
+  - PANDAS=0.19
 before_install:
   - pip install --quiet tox-travis coveralls
 script:
-  - tox -- --cov dictsdiff
+  - tox --develop -- --cov dictsdiff
+  # Use --develop so that files are visible in coveralls.io
 after_success:
   - coveralls
