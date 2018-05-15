@@ -12,8 +12,9 @@ def test_load_yaml(tmpdir):
     assert loaded == {'x': 1}
 
 
-def test_load_json(tmpdir):
-    paramfile = tmpdir.join('param.json')
+@pytest.mark.parametrize('filename', ['param.json', 'param.unknown-ext'])
+def test_load_json(tmpdir, filename):
+    paramfile = tmpdir.join(filename)
     paramfile.write('{"x": 1}')
     loaded = load_any(str(paramfile))
     assert loaded == {'x': 1}

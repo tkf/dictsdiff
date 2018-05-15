@@ -33,7 +33,18 @@ def load_any_file(path):
     """
     Load data from given path; data format is determined by file extension
     """
-    module, mode = param_module(path)
+    import json
+    try:
+        module, mode = param_module(path)
+    except LoaderError:
+        # Try to load as JSON anyway:
+        try:
+            with open(path, 'r') as f:
+                return json.load(f)
+        except (OSError, IOError, json.JSONDecodeError):
+            pass
+        raise
+
     with open(path, 'r' + mode) as f:
         return module.load(f)
 
