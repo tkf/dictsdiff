@@ -4,29 +4,29 @@ python:
   - "3.5"
   - "3.6"
 env:
-  # - PANDAS=dev
-  - PANDAS=rel
+  - PANDAS=dev
+  # - PANDAS=rel
 
-  # - PANDAS=0.24
-  # - PANDAS=0.23
+  - PANDAS=0.24
+  - PANDAS=0.23
   - PANDAS=0.22
   # Testing `force_tuple_columns` seem to require pandas 0.22--0.20.
   #
   # See: [[./src/dictsdiff/core.py::def force_tuple_columns]]
   # https://github.com/pandas-dev/pandas/issues/16769
 
-  # - PANDAS=0.21
-  # - PANDAS=0.20
+  - PANDAS=0.21
+  - PANDAS=0.20
   - PANDAS=0.19
 jobs:
   include:
     # Python 2.7 is supported only up to pandas 0.24:
     # http://pandas.pydata.org/pandas-docs/version/0.24/install.html#install-dropping-27
     - {python: "2.7", env: PANDAS=0.24}
-    # - {python: "2.7", env: PANDAS=0.23}
+    - {python: "2.7", env: PANDAS=0.23}
     - {python: "2.7", env: PANDAS=0.22}
-    # - {python: "2.7", env: PANDAS=0.21}
-    # - {python: "2.7", env: PANDAS=0.20}
+    - {python: "2.7", env: PANDAS=0.21}
+    - {python: "2.7", env: PANDAS=0.20}
     - {python: "2.7", env: PANDAS=0.19}
 before_install:
   - pip install --quiet tox-travis coveralls
