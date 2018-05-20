@@ -1,5 +1,4 @@
 from itertools import combinations_with_replacement
-import operator
 
 import pytest
 
