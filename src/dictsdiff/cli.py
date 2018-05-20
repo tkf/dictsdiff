@@ -45,6 +45,12 @@ output when ``--compact-output``/``-c`` is passed::
 
   jq --compact-output '' **/*.json | dictsdiff
 
+To pass the original file path of JSON files to ``dictsdiff``, use
+``--info-key`` option combined with jq_'s ``input_filename``, e.g.,::
+
+  jq --compact-output '.path = input_filename' **/*.json \
+    | dictsdiff --info-key=path
+
 .. _jq: https://stedolan.github.io/jq/
 """
 
