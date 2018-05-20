@@ -190,6 +190,7 @@ if sys.version_info[0] == 2:
 
 
 def make_parser(doc=__doc__):
+    from . import __version__
     import argparse
     parser = argparse.ArgumentParser(
         formatter_class=type('FormatterClass',
@@ -197,6 +198,7 @@ def make_parser(doc=__doc__):
                               argparse.ArgumentDefaultsHelpFormatter),
                              {}),
         description=doc)
+    parser.add_argument('--version', action='version', version=__version__)
     parser.add_argument(
         'files', metavar='FILE', nargs='*',
     )
