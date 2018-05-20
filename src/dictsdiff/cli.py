@@ -101,6 +101,24 @@ def jspath_to_tuple(jspath):
 
 
 def process_info_key(info_key):
+    '''
+    Turn a JSONPath `info_key` to a tuple representing "dict path".
+
+    >>> process_info_key('$.a')
+    ('a',)
+    >>> process_info_key('$.a.b.c')
+    ('a', 'b', 'c')
+    >>> process_info_key('$.a[1].b["2"].c')
+    ('a', 1, 'b', '2', 'c')
+
+    Note that prefixing `info_key` with '$.' is not necessary:
+
+    >>> process_info_key('.a.b')
+    ('a', 'b')
+    >>> process_info_key('a.b')
+    ('a', 'b')
+
+    '''
     if info_key.startswith('.'):
         info_key = '$' + info_key
     elif not info_key.startswith('$.'):
