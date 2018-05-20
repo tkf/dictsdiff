@@ -1,8 +1,9 @@
 from itertools import combinations_with_replacement
+import os
 
 import pytest
 
-from ..cli import parse_file_paths
+from ..cli import parse_file_paths, main
 
 
 @pytest.mark.parametrize('files, desired', [
@@ -46,3 +47,19 @@ def gen_file_paths(lengths):
 def test_parse_file_paths_all(maxlen=5):
     for files, desired in gen_file_paths(range(maxlen + 1)):
         test_parse_file_paths(files, desired)
+
+
+def test_main_smoke(tmpdir):
+    paramfile1 = tmpdir.join('param1.json')
+    paramfile2 = tmpdir.join('param2.json')
+    paramfile1.write('{"x": 1}')
+    paramfile2.write('{"x": 2}')
+    main([str(paramfile1), str(paramfile2)])
+
+
+def test_ndjson_and_files(capsys):
+    with pytest.raises(SystemExit) as excinfo:
+        main(['--ndjson=-', os.devnull])
+    captured = capsys.readouterr()
+    assert excinfo.value.code == 2
+    assert 'FILES and --ndjson are mutually exclusive.' in captured.err
