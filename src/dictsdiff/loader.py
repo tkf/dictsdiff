@@ -1,5 +1,6 @@
 import os
 import subprocess
+import sys
 
 from .core import DictsDiffError, DictsDiff, diff_dicts
 
@@ -35,14 +36,21 @@ def load_any_file(path):
     """
     import json
     try:
+        from json import JSONDecodeError
+    except ImportError:
+        JSONDecodeError = ValueError  # Python 2
+
+    try:
         module, mode = param_module(path)
-    except LoaderError:
+    except LoaderError as err:
         # Try to load as JSON anyway:
         try:
             with open(path, 'r') as f:
                 return json.load(f)
-        except (OSError, IOError, json.JSONDecodeError):
+        except (OSError, IOError, JSONDecodeError):
             pass
+        if sys.version_info[0] == 2:
+            raise err
         raise
 
     with open(path, 'r' + mode) as f:

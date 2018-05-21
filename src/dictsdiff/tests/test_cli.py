@@ -1,6 +1,5 @@
 from itertools import combinations_with_replacement
 import os
-import sys
 
 import pytest
 
@@ -80,7 +79,6 @@ def test_ndjson_and_files(capsys):
     assert 'FILES and --ndjson are mutually exclusive.' in captured.err
 
 
-@pytest.mark.skipif(sys.version_info < (3,), reason="requires Python 3")
 def test_load_error(capsys, tmpdir):
     paramfile = tmpdir.join('file.!unknown_extension!')
     paramfile.write('!')  # invalid as JSON
