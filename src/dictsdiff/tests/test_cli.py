@@ -1,5 +1,6 @@
 from itertools import combinations_with_replacement
 import os
+import sys
 
 import pytest
 
@@ -63,3 +64,14 @@ def test_ndjson_and_files(capsys):
     captured = capsys.readouterr()
     assert excinfo.value.code == 2
     assert 'FILES and --ndjson are mutually exclusive.' in captured.err
+
+
+@pytest.mark.skipif(sys.version_info < (3,), reason="requires Python 3")
+def test_load_error(capsys, tmpdir):
+    paramfile = tmpdir.join('file.!unknown_extension!')
+    paramfile.write('!')  # invalid as JSON
+    with pytest.raises(SystemExit) as excinfo:
+        main([str(paramfile)])
+    captured = capsys.readouterr()
+    assert excinfo.value.code == 1
+    assert 'is not supported' in captured.err
