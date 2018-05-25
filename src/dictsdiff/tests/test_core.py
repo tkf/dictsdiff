@@ -50,3 +50,22 @@ def test_info_keys_with_empty_info_dicts():
     assert list(df.columns) == ['a.c']
     assert list(df.index.names) == ['a.b']
     assert list(df.index) == [111, 222]
+
+
+def test_info_keys_with_nonexistent_info_keys():
+    dd = diff_dicts(
+        [dict(a=dict(b=111, c=0)), dict(a=dict(b=222, c=1))],
+        info_keys=[('spam', 'egg')],
+    )
+    return dd  # TODO: merge it with below
+#
+# ...or maybe this shouldn't be allowed?  If I were to go that path, I
+# shouldn't ignore `KeyError` in `DictsDiff._move_info_values`.
+
+
+@pytest.mark.xfail(raises=KeyError)
+def test_info_keys_with_nonexistent_info_keys_xfail():
+    dd = test_info_keys_with_nonexistent_info_keys()
+    df = dd.pretty_diff()
+    assert list(df.columns) == ['a.b', 'a.c']
+    assert list(df.index.names) == []
