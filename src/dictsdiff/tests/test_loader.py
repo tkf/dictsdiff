@@ -36,6 +36,14 @@ def test_load_toml(tmpdir):
     assert loaded == {'x': 1}
 
 
+@pytest.mark.parametrize('filename', ['param.json', 'param.unknown-ext'])
+def test_load_json_with_jspath(tmpdir, filename):
+    paramfile = tmpdir.join(filename)
+    paramfile.write('{"x": {"y": {"z": {"a": 1, "b": 2}}}}')
+    loaded = load_any((str(paramfile), "$.x.y.z"))
+    assert loaded == {"a": 1, "b": 2}
+
+
 @pytest.mark.parametrize('path, info_dict', [
     ('strpath', dict(path='strpath', filepath='strpath')),
     (('strpath', None), dict(path='strpath', filepath='strpath')),
