@@ -50,12 +50,26 @@ def test_parse_file_paths_all(maxlen=5):
         test_parse_file_paths(files, desired)
 
 
-def test_main_smoke(tmpdir):
+@pytest.mark.parametrize('options', [
+    [],
+    ['-T'],
+    ['--transform', 'cat {}'],
+])
+def test_main_smoke(tmpdir, options):
     paramfile1 = tmpdir.join('param1.json')
     paramfile2 = tmpdir.join('param2.json')
     paramfile1.write('{"x": 1}')
     paramfile2.write('{"x": 2}')
-    main([str(paramfile1), str(paramfile2)])
+    main(options + [str(paramfile1), str(paramfile2)])
+
+
+def test_main_smoke_ndjson(tmpdir):
+    paramfile = tmpdir.join('param.ndjson')
+    paramfile.write('''
+    {"x": 1}
+    {"x": 2}
+    '''.strip())
+    main(['--ndjson', str(paramfile)])
 
 
 def test_ndjson_and_files(capsys):
