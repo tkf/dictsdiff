@@ -5,9 +5,15 @@ python:
   - "3.5"
   - "3.6"
 env:
-  - PANDAS=dev
+  # - PANDAS=dev
   - PANDAS=rel
-  # - PANDAS=0.22
+
+  - PANDAS=0.22
+  # Testing `force_tuple_columns` seem to require pandas 0.22--0.20.
+  #
+  # See: [[./src/dictsdiff/core.py::def force_tuple_columns]]
+  # https://github.com/pandas-dev/pandas/issues/16769
+
   # - PANDAS=0.21
   # - PANDAS=0.20
   - PANDAS=0.19
