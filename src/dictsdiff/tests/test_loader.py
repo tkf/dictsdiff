@@ -2,7 +2,7 @@ import pickle
 
 import pytest
 
-from ..loader import load_any, to_info_dict, transforming_loader
+from ..loader import load_any, to_info_dict, transforming_loader, LoaderError
 
 
 def test_load_yaml(tmpdir):
@@ -42,6 +42,18 @@ def test_load_json_with_jspath(tmpdir, filename):
     paramfile.write('{"x": {"y": {"z": {"a": 1, "b": 2}}}}')
     loaded = load_any((str(paramfile), "$.x.y.z"))
     assert loaded == {"a": 1, "b": 2}
+
+
+@pytest.mark.parametrize('filename', ['param.json', 'param.unknown-ext'])
+@pytest.mark.parametrize('jspath, exception', [
+    ('$.x.y.z', LoaderError),
+    ('$.x.y[*]', LoaderError),
+])
+def test_load_json_with_jspath_error(tmpdir, filename, jspath, exception):
+    paramfile = tmpdir.join(filename)
+    paramfile.write('{"x": {"y": [{"a": 1}, {"a": 2}]}}')
+    with pytest.raises(exception):
+        load_any((str(paramfile), jspath))
 
 
 @pytest.mark.parametrize('path, info_dict', [
