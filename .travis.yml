@@ -24,3 +24,5 @@ script:
   # Use --develop so that files are visible in coveralls.io
 after_success:
   - coveralls
+notifications:
+  email: false
