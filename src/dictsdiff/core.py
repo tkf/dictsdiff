@@ -86,19 +86,30 @@ class DictsDiff(object):
 
     def pretty_diff(self):
         df = self.diff_df.copy()
+
+        df_has_path = ('info', ('path',)) in df
         if self.info_keys:
             df = df.set_index([('info', key) for key in self.info_keys])
-            df = df['value']
+        elif df_has_path:
+            paths = df['info', ('path',)]
+
+        try:
+            df = df.loc[:, ("value", slice(None))]
+        except KeyError:
+            assert not self.keys
+            # This seems to be pandas' bug...
+            df = pandas.DataFrame(index=df.index)
+        else:
+            df.columns = df.columns.droplevel()
+
+        if self.info_keys:
             # Throw away ('info', ...) part and then prettify the
             # index names.  Note that n[0] below is always 'info':
             df.index.names = pretty_column_keys(n[1] for n in df.index.names)
-        elif ('info', ('path',)) in df:
-            paths = df['info', ('path',)]
-            df = df['value']
+        elif df_has_path:
             df.index = paths
             df.index.name = 'path'
-        else:
-            df = df['value']
+
         df.columns = pretty_column_keys(df.columns)
         return df
 
