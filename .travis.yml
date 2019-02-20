@@ -8,6 +8,8 @@ env:
   # - PANDAS=dev
   - PANDAS=rel
 
+  # - PANDAS=0.24
+  # - PANDAS=0.23
   - PANDAS=0.22
   # Testing `force_tuple_columns` seem to require pandas 0.22--0.20.
   #
