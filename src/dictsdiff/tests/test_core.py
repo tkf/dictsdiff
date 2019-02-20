@@ -69,3 +69,10 @@ def test_info_keys_with_nonexistent_info_keys_xfail():
     df = dd.pretty_diff()
     assert list(df.columns) == ['a.b', 'a.c']
     assert list(df.index.names) == []
+
+
+def test_no_diff():
+    d1 = dict(a=dict(b=111, c=0))
+    dd = diff_dicts([d1, d1, d1])
+    df = dd.pretty_diff()
+    assert len(df.columns) == 0
