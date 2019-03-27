@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='dictsdiff',
-    version="0.1.0",
+    version="0.1.1.dev",
     packages=find_packages('src'),
     package_dir={'': 'src'},
     author='Takafumi Arakaki',
