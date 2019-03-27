@@ -9,10 +9,19 @@ class LoaderError(DictsDiffError):
     pass
 
 
+class YAMLShim(object):
+    def __init__(self):
+        try:
+            from yaml import safe_load as load
+        except ImportError:
+            from yaml import load
+
+        self.load = load
+
+
 def param_module(path):
     if path.lower().endswith(('.yaml', '.yml')):
-        import yaml
-        return yaml, ''
+        return YAMLShim(), ''
     elif path.lower().endswith('.json'):
         import json
         return json, ''
