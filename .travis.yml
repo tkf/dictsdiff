@@ -15,8 +15,6 @@ jobs:
     # See: [[./src/dictsdiff/core.py::def force_tuple_columns]]
     # https://github.com/pandas-dev/pandas/issues/16769
 
-    - {python: "3.5", env: PANDAS=0.19}
-
     # Python 2.7 is supported only up to pandas 0.24:
     # http://pandas.pydata.org/pandas-docs/version/0.24/install.html#install-dropping-27
     - {python: "2.7", env: PANDAS=0.24}
