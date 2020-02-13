@@ -16,7 +16,10 @@ setup(
         'Development Status :: 3 - Alpha',
         'License :: OSI Approved :: BSD License',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'Topic :: Software Development',
         # see: http://pypi.python.org/pypi?%3Aaction=list_classifiers
     ],
