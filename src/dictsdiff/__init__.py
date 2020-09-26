@@ -2,7 +2,7 @@
 Command line program & Python functions for comparing multiple dictionaries
 ===========================================================================
 
-|pypi| |build-status| |coveralls|
+|pypi| |build-status| |codecov|
 
 `dictsdiff` provides a CLI and Python interface for comparing
 arbitrary number of nested dictionaries and show it as a tabular
@@ -98,9 +98,9 @@ Requirements
    :target: http://travis-ci.org/tkf/dictsdiff
    :alt: Build Status
 
-.. |coveralls|
-   image:: https://coveralls.io/repos/github/tkf/dictsdiff/badge.svg?branch=master
-   :target: https://coveralls.io/github/tkf/dictsdiff?branch=master
+.. |codecov|
+   image:: https://codecov.io/gh/tkf/dictsdiff/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/tkf/dictsdiff
    :alt: Test Coverage
 """
 
