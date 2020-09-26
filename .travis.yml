@@ -18,7 +18,6 @@ before_install:
   - pip install --quiet tox-travis coveralls
 script:
   - tox --develop -- --cov dictsdiff
-  # Use --develop so that files are visible in coveralls.io
 notifications:
   email: false
 
