@@ -60,10 +60,7 @@ import sys
 
 from .core import DictsDiffError
 
-try:
-    from shutil import get_terminal_size
-except ImportError:
-    from .utils import get_terminal_size_stty as get_terminal_size
+from shutil import get_terminal_size
 
 
 class CLIError(DictsDiffError, RuntimeError):
